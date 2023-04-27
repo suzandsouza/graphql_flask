@@ -3,7 +3,7 @@ from graphene import relay
 from graphene_sqlalchemy import SQLAlchemyObjectType, SQLAlchemyConnectionField
 from models import db_session, Section as SectionModel, Task as TaskModel
 import stripe
-
+from flask_keycloak import login_required
 stripe.api_key = "stripe_api_key"
 
 class Section(SQLAlchemyObjectType):
@@ -24,6 +24,7 @@ class CreateTask(graphene.Mutation):
         
     task=graphene.Field(lambda: Task)
     
+    @login_required #protecting the routes
     def mutate(self, info, name, section_id):
         section=SectionModel.query.filter_by(id=section_id).first()
         task=TaskModel(name=name, section=section)
@@ -41,6 +42,7 @@ class PremiumCreateTask(graphene.Mutation):
 
     task = graphene.Field(lambda: Task)
 
+    @login_required
     def mutate(self, info, name, section_id, image, amount, token):
         # Verify the payment
         try:
@@ -70,6 +72,7 @@ class UpdateTask(graphene.Mutation):
         
     task = graphene.Field(lambda: Task)
     
+    @login_required
     def mutate(self, info, id, name, section_id):
         task = TaskModel.query.filter_by(id=id).first()
         if task:
@@ -88,6 +91,7 @@ class DeleteTask(graphene.Mutation):
         
     ok = graphene.Boolean()
     
+    @login_required
     def mutate(self, info, id):
         task = TaskModel.query.filter_by(id=id).first()
         if task:
@@ -104,6 +108,7 @@ class Query(graphene.ObjectType):
     all_tasks = SQLAlchemyConnectionField(Task.connection)
     # Disable sorting over this field
     all_sections = SQLAlchemyConnectionField(Section.connection, sort=None)
+
 
 class Mutation(graphene.ObjectType):
     create_task=CreateTask.Field()
