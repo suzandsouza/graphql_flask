@@ -74,6 +74,28 @@ Authentication: Keycloak
 | :-------- | :------- | :-------------------------------- |
 |   `success`      | `string` | **Required**. Id of task to delete |
 
+####  Update a task
+
+```
+mutation {
+  updateTask(taskId: "1", name: "New Task Name", sectionId: "1") {
+    task {
+      id
+      name
+      section {
+        id
+        name
+      }
+    }
+  }
+}
+
+```
+
+| Body       | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+|   `success`      | `string` | **Required**. Id of task and Id of section |
+
 
 #### Signup
 
