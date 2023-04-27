@@ -97,7 +97,7 @@ Install my-project with
 
 ```bash
 
-  cd frontend
+  cd keycloak_auth
   npm i
 ```
 Add the frontend files 
